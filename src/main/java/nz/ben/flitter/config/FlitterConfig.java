@@ -1,4 +1,4 @@
-package nz.ben.config;
+package nz.ben.flitter.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

@@ -1,8 +1,6 @@
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
-import nz.ben.config.FlitterConfig;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 
 
 /**

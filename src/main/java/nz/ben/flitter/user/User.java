@@ -1,19 +1,16 @@
-package nz.ben.user;
+package nz.ben.flitter.user;
 
-import nz.ben.message.Message;
-import nz.ben.message.PostOffice;
+import nz.ben.flitter.message.Message;
+import nz.ben.flitter.message.PostOffice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by bengilbert on 23/04/15.
  */
 @Configurable
-//@Service
 public class User {
 
     @Autowired
@@ -24,11 +21,6 @@ public class User {
     public User(final String userName) {
         this.userName = userName;
     }
-
-//    public User() {
-//        userName = "alice";
-//    }
-
 
     public void postMessage(final String message) {
         postOffice.postMessage(this, new Message(message));

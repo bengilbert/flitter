@@ -1,13 +1,11 @@
-package nz.ben.message;
+package nz.ben.flitter.message;
 
-import nz.ben.user.User;
+import nz.ben.flitter.user.User;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by bengilbert on 23/04/15.
