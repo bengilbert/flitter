@@ -1,4 +1,4 @@
-package nz.ben.flitter.ui;
+package nz.ben.flitter.command;
 
 import nz.ben.flitter.user.User;
 import org.springframework.beans.factory.annotation.Configurable;

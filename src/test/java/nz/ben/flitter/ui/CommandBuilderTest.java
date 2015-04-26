@@ -1,6 +1,8 @@
 package nz.ben.flitter.ui;
 
 import junit.framework.TestCase;
+import nz.ben.flitter.command.Command;
+import nz.ben.flitter.command.CommandBuilder;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
