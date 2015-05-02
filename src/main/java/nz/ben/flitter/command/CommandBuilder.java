@@ -1,6 +1,5 @@
 package nz.ben.flitter.command;
 
-import nz.ben.flitter.user.User;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.regex.Matcher;
@@ -20,19 +19,29 @@ public class CommandBuilder {
     }
 
     public Command build() {
-        Pattern p = Pattern.compile("(\\S+)(?: *)(\\S*)(?: *)(\\S*)");
+        Pattern p = Pattern.compile("(.*)(->|follows|wall)(.*)");
         Matcher m = p.matcher(command);
 
-        User user = null;
+        String userName = null;
         Command.CommandType commandType = Command.CommandType.UNKNOWN;
         String commandDetail = null;
 
-        if (m.matches()) {
-            String userName = m.group(1);
+        if (!m.matches() && !command.isEmpty()) {
+            //assume viewing posts for a user
+            userName = command;
+            commandType = Command.CommandType.VIEW_TIMELINE;
+            commandDetail = "";
+        } else if (!m.matches() && command.isEmpty()) {
+            userName = "";
+            commandType = Command.CommandType.UNKNOWN;
+            commandDetail = "";
+        } else {
 
-            if (!userName.isEmpty()) {
-                user = new User(userName);
-            }
+//            if (!m.group(1).isEmpty()) {
+//                userName = m.group(1).trim();
+//            }
+
+            userName = m.group(1);
 
             switch (m.group(2)) {
                 case "->":
@@ -45,16 +54,17 @@ public class CommandBuilder {
                     commandType = Command.CommandType.VIEW_WALL;
                     break;
                 default:
-                    commandType = Command.CommandType.VIEW_TIMELINE;
+                    commandType = Command.CommandType.UNKNOWN;
             }
 
+            commandDetail = "";
             if (!m.group(3).isEmpty()) {
                 commandDetail = m.group(3);
             }
 
         }
 
-        return new Command(user, commandType, commandDetail);
+        return new Command(userName.trim(), commandType, commandDetail.trim());
     }
 
 

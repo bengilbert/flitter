@@ -1,45 +1,118 @@
 package nz.ben.flitter.ui;
 
-import junit.framework.TestCase;
 import nz.ben.flitter.command.Command;
 import nz.ben.flitter.command.CommandBuilder;
+import nz.ben.flitter.config.FlitterConfig;
+import nz.ben.flitter.user.User;
+import nz.ben.flitter.user.UserService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.text.IsEmptyString.isEmptyString;
 
 /**
  * Created by bengilbert on 25/04/15.
  */
-public class CommandBuilderTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = FlitterConfig.class)
+public class CommandBuilderTest {
 
+    @Autowired
+    private UserService userService;
+
+    @Before
+    public void setup() {
+        userService.reset();
+    }
+
+    @Test()
     public void testBuild_blankString_isUnknown() {
         Command command = new CommandBuilder().forString("").build();
         assertThat(command.getCommandType(), is(Command.CommandType.UNKNOWN));
-        assertThat(command.getUser(), is(nullValue()));
-        assertThat(command.getCommandDetail(), is(nullValue()));
+        assertThat(command.getCommandDetail(), isEmptyString());
     }
 
+    @Test
     public void testBuild_userName_viewsWall() throws Exception {
+        User alice = userService.createUser("Alice");
+
         Command command = new CommandBuilder().forString("Alice").build();
         assertThat(command.getCommandType(), is(Command.CommandType.VIEW_TIMELINE));
-        assertThat(command.getUser(), not(nullValue()));
-        assertThat(command.getCommandDetail(), is(nullValue()));
+        assertThat(command.getUser(), is(alice));
+        assertThat(command.getCommandDetail(), isEmptyString());
     }
 
+    @Test
+    public void testBuild_userFollowsOtherUser_bothUsersExist() throws Exception {
+        User alice = userService.createUser("Alice");
+        User charles = userService.createUser("Charles");
+
+        Command command = new CommandBuilder().forString("Alice follows Charles").build();
+
+        assertThat(command.getCommandType(), is(Command.CommandType.FOLLOW));
+        assertThat(command.getUser(), is(alice));
+        assertThat(command.getCommandDetail(), is(charles.getUserName()));
+    }
+
+    @Test
     public void testBuild_postingMessage_validCommand() throws Exception {
+        User alice = userService.createUser("Alice");
+
         Command command = new CommandBuilder().forString("Alice -> message").build();
+
         assertThat(command.getCommandType(), is(Command.CommandType.POST));
-        assertThat(command.getUser(), not(nullValue()));
+        assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), is("message"));
     }
 
+    @Test
+    public void testBuild_postingMultiWordMessage_validCommand() throws Exception {
+        User alice = userService.createUser("Alice");
+
+        Command command = new CommandBuilder().forString("Alice -> message with spaces").build();
+
+        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getUser(), is(alice));
+        assertThat(command.getCommandDetail(), is("message with spaces"));
+    }
+
+    @Test
+    public void testBuild_postingMultiWordName_validCommand() throws Exception {
+        User alice = userService.createUser("Alice April");
+
+        Command command = new CommandBuilder().forString("Alice April -> message").build();
+
+        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getUser(), is(alice));
+        assertThat(command.getCommandDetail(), is("message"));
+    }
+
+    @Test
+    public void testBuild_postingMultiWordNameWithMultiWordMessage_validCommand() throws Exception {
+        User alice = userService.createUser("Alice April");
+
+        Command command = new CommandBuilder().forString("Alice April -> message with spaces").build();
+
+        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getUser(), is(alice));
+        assertThat(command.getCommandDetail(), is("message with spaces"));
+    }
+
+
+    @Test
     public void testBuild_postingEmptyMessage_validCommand() throws Exception {
+        User alice = userService.createUser("Alice");
+
         Command command = new CommandBuilder().forString("Alice ->").build();
         assertThat(command.getCommandType(), is(Command.CommandType.POST));
-        assertThat(command.getUser(), not(nullValue()));
-        assertThat(command.getCommandDetail(), is(nullValue()));
+        assertThat(command.getUser(), is(alice));
+        assertThat(command.getCommandDetail(), isEmptyString());
     }
 
 

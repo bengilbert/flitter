@@ -15,11 +15,15 @@ public class PostOffice {
 
     MultiValueMap<User, Message> messages = new MultiValueMap<>();
 
-    public void postMessage(final User user, final Message message) {
-        messages.put(user, message);
+    public void postMessage(final Message message) {
+        messages.put(message.getUser(), message);
     }
 
     public Collection<Message> getMessagesForUser(final User user) {
         return CollectionUtils.emptyIfNull(messages.getCollection(user));
+    }
+
+    public void reset() {
+        messages.clear();
     }
 }

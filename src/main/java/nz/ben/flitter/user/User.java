@@ -5,7 +5,10 @@ import nz.ben.flitter.message.PostOffice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by bengilbert on 23/04/15.
@@ -16,18 +19,37 @@ public class User {
     @Autowired
     private PostOffice postOffice;
 
+    private Set<User> follows = new HashSet<>();
+
     private String userName;
 
-    public User(final String userName) {
+    /* package */ User(final String userName) {
         this.userName = userName;
     }
 
     public void postMessage(final String message) {
-        postOffice.postMessage(this, new Message(message));
+        postOffice.postMessage(new Message(this, message));
     }
 
     public Collection<Message> timeline() {
         return postOffice.getMessagesForUser(this);
+    }
+
+    public Collection<Message> wall() {
+        Collection<Message> allMessages = new ArrayList<>();
+        allMessages.addAll(timeline());
+
+        follows.forEach(u -> allMessages.addAll(u.timeline()));
+
+        return allMessages;
+    }
+
+    public void follow(final User user) {
+        follows.add(user);
+    }
+
+    public String getUserName() {
+        return this.userName;
     }
 
     @Override

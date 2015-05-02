@@ -2,29 +2,48 @@ package nz.ben.flitter.command;
 
 import nz.ben.flitter.message.Message;
 import nz.ben.flitter.user.User;
+import nz.ben.flitter.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Created by bengilbert on 25/04/15.
  */
+@Configurable
 public class Command {
 
-    public enum CommandType {POST, FOLLOW, VIEW_TIMELINE, VIEW_WALL, UNKNOWN};
+    @Autowired
+    private UserService userService;
 
-    private User user;
+    public enum CommandType {POST, FOLLOW, VIEW_TIMELINE, VIEW_WALL, UNKNOWN}
+
+    ;
+
+    private String userName;
     private CommandType commandType;
     private String commandDetail;
 
-    public Command(final User user, final CommandType type, final String commandDetail) {
-        this.user = user;
+    /* package */ Command(final String userName, final CommandType type, final String commandDetail) {
+        this.userName = userName;
         this.commandType = type;
         this.commandDetail = commandDetail;
     }
 
     public User getUser() {
-        return this.user;
+        //TODO there is probably a better way to implement this
+        Optional<User> user = userService.findByName(userName);
+        if (!user.isPresent()) {
+            user = Optional.of(userService.createUser(userName));
+        }
+        return user.get();
+    }
+
+    public Optional<User> getOtherUser() {
+        return userService.findByName(commandDetail);
     }
 
     public CommandType getCommandType() {
@@ -43,13 +62,14 @@ public class Command {
                 getUser().postMessage(getCommandDetail());
                 break;
             case VIEW_WALL:
-                response = getUser().timeline();
+                response = getUser().wall();
                 break;
             case VIEW_TIMELINE:
                 response = getUser().timeline();
                 break;
             case FOLLOW:
-                break;
+                User otherUser = getOtherUser().orElseThrow(IllegalStateException::new);
+                getUser().follow(otherUser);
             default:
                 break;
         }

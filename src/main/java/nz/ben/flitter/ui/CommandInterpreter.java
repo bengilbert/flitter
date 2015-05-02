@@ -6,7 +6,6 @@ import nz.ben.flitter.message.Message;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 
 /**
@@ -15,13 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class CommandInterpreter {
 
-    public String interpretCommand(final String commandText) {
+    public Collection<Message> interpretCommand(final String commandText) {
         Command command = new CommandBuilder().forString(commandText).build();
         Collection<Message> responses = command.execute();
-        if (!responses.isEmpty()) {
-            return responses.stream().map(Message::getMessage).collect(Collectors.joining("\n"));
-        }
 
-        return "";
+        return responses;
+
     }
 }
