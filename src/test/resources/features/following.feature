@@ -6,5 +6,3 @@ Feature:  Users can follow other users timelines
     And the user follows the other user
     When the user views their wall they see posts for everyone they are following
     And the user views their wall they see their own posts
-
-  Scenario: Following a non existent user

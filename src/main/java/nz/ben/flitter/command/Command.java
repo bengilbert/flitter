@@ -19,7 +19,9 @@ public class Command {
     @Autowired
     private UserRepository userRepository;
 
-    public enum CommandType {POST, FOLLOW, VIEW_TIMELINE, VIEW_WALL, UNKNOWN};
+    public enum CommandType {POST, FOLLOW, VIEW_TIMELINE, VIEW_WALL, UNKNOWN}
+
+    ;
 
     private String userName;
     private CommandType commandType;

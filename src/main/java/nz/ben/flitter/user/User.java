@@ -2,6 +2,7 @@ package nz.ben.flitter.user;
 
 import nz.ben.flitter.message.Message;
 import nz.ben.flitter.message.PostOffice;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -28,7 +29,7 @@ public class User {
     }
 
     public void postMessage(final String message) {
-        postOffice.postMessage(new Message(this, message));
+        postOffice.postMessage(new Message(this, message, DateTime.now()));
     }
 
     public Collection<Message> timeline() {

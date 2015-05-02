@@ -1,6 +1,7 @@
 package nz.ben.flitter.message;
 
 import nz.ben.flitter.user.User;
+import org.joda.time.DateTime;
 
 import java.util.Objects;
 
@@ -11,10 +12,12 @@ public class Message {
 
     private String message;
     private User user;
+    private DateTime posted;
 
-    public Message(final User user, final String message) {
+    public Message(final User user, final String message, final DateTime dateTimePosted) {
         this.message = message;
         this.user = user;
+        this.posted = dateTimePosted;
     }
 
     public String getMessage() {
@@ -23,6 +26,10 @@ public class Message {
 
     public User getUser() {
         return user;
+    }
+
+    public DateTime getDateTime() {
+        return posted;
     }
 
     @Override
