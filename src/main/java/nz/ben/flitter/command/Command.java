@@ -2,7 +2,7 @@ package nz.ben.flitter.command;
 
 import nz.ben.flitter.message.Message;
 import nz.ben.flitter.user.User;
-import nz.ben.flitter.user.UserService;
+import nz.ben.flitter.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -17,11 +17,9 @@ import java.util.Optional;
 public class Command {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
-    public enum CommandType {POST, FOLLOW, VIEW_TIMELINE, VIEW_WALL, UNKNOWN}
-
-    ;
+    public enum CommandType {POST, FOLLOW, VIEW_TIMELINE, VIEW_WALL, UNKNOWN};
 
     private String userName;
     private CommandType commandType;
@@ -35,15 +33,15 @@ public class Command {
 
     public User getUser() {
         //TODO there is probably a better way to implement this
-        Optional<User> user = userService.findByName(userName);
+        Optional<User> user = userRepository.findByName(userName);
         if (!user.isPresent()) {
-            user = Optional.of(userService.createUser(userName));
+            user = Optional.of(userRepository.createUser(userName));
         }
         return user.get();
     }
 
     public Optional<User> getOtherUser() {
-        return userService.findByName(commandDetail);
+        return userRepository.findByName(commandDetail);
     }
 
     public CommandType getCommandType() {

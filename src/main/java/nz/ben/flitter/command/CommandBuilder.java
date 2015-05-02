@@ -27,7 +27,7 @@ public class CommandBuilder {
         String commandDetail = null;
 
         if (!m.matches() && !command.isEmpty()) {
-            //assume viewing posts for a user
+            //assume viewing posts for a user when the regex mtches nothing.
             userName = command;
             commandType = Command.CommandType.VIEW_TIMELINE;
             commandDetail = "";
@@ -36,10 +36,6 @@ public class CommandBuilder {
             commandType = Command.CommandType.UNKNOWN;
             commandDetail = "";
         } else {
-
-//            if (!m.group(1).isEmpty()) {
-//                userName = m.group(1).trim();
-//            }
 
             userName = m.group(1);
 

@@ -3,7 +3,7 @@ package nz.ben.flitter.cucumber.domain;
 import nz.ben.flitter.message.Message;
 import nz.ben.flitter.ui.CommandInterpreter;
 import nz.ben.flitter.user.User;
-import nz.ben.flitter.user.UserService;
+import nz.ben.flitter.user.UserRepository;
 import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -20,7 +20,7 @@ public class ShadowUser {
     private CommandInterpreter interpreter;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     private String userName;
 
@@ -62,7 +62,7 @@ public class ShadowUser {
 
     public User getUser() {
         //Assuming that the user always exists
-        return userService.findByName(getUserName()).orElseThrow(RuntimeException::new);
+        return userRepository.findByName(getUserName()).orElseThrow(RuntimeException::new);
     }
 
     @Override

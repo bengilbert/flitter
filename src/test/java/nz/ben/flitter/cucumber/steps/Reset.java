@@ -3,7 +3,7 @@ package nz.ben.flitter.cucumber.steps;
 import cucumber.api.java.Before;
 import nz.ben.flitter.config.FlitterConfig;
 import nz.ben.flitter.message.PostOffice;
-import nz.ben.flitter.user.UserService;
+import nz.ben.flitter.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 public class Reset {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Autowired
     private PostOffice postOffice;
@@ -22,7 +22,7 @@ public class Reset {
 
     @Before(order = -10000)
     public void reset() {
-        userService.reset();
+        userRepository.reset();
         postOffice.reset();
     }
 }

@@ -4,7 +4,7 @@ import nz.ben.flitter.command.Command;
 import nz.ben.flitter.command.CommandBuilder;
 import nz.ben.flitter.config.FlitterConfig;
 import nz.ben.flitter.user.User;
-import nz.ben.flitter.user.UserService;
+import nz.ben.flitter.user.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +24,11 @@ import static org.hamcrest.text.IsEmptyString.isEmptyString;
 public class CommandBuilderTest {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Before
     public void setup() {
-        userService.reset();
+        userRepository.reset();
     }
 
     @Test()
@@ -40,7 +40,7 @@ public class CommandBuilderTest {
 
     @Test
     public void testBuild_userName_viewsWall() throws Exception {
-        User alice = userService.createUser("Alice");
+        User alice = userRepository.createUser("Alice");
 
         Command command = new CommandBuilder().forString("Alice").build();
         assertThat(command.getCommandType(), is(Command.CommandType.VIEW_TIMELINE));
@@ -50,8 +50,8 @@ public class CommandBuilderTest {
 
     @Test
     public void testBuild_userFollowsOtherUser_bothUsersExist() throws Exception {
-        User alice = userService.createUser("Alice");
-        User charles = userService.createUser("Charles");
+        User alice = userRepository.createUser("Alice");
+        User charles = userRepository.createUser("Charles");
 
         Command command = new CommandBuilder().forString("Alice follows Charles").build();
 
@@ -62,7 +62,7 @@ public class CommandBuilderTest {
 
     @Test
     public void testBuild_postingMessage_validCommand() throws Exception {
-        User alice = userService.createUser("Alice");
+        User alice = userRepository.createUser("Alice");
 
         Command command = new CommandBuilder().forString("Alice -> message").build();
 
@@ -73,7 +73,7 @@ public class CommandBuilderTest {
 
     @Test
     public void testBuild_postingMultiWordMessage_validCommand() throws Exception {
-        User alice = userService.createUser("Alice");
+        User alice = userRepository.createUser("Alice");
 
         Command command = new CommandBuilder().forString("Alice -> message with spaces").build();
 
@@ -84,7 +84,7 @@ public class CommandBuilderTest {
 
     @Test
     public void testBuild_postingMultiWordName_validCommand() throws Exception {
-        User alice = userService.createUser("Alice April");
+        User alice = userRepository.createUser("Alice April");
 
         Command command = new CommandBuilder().forString("Alice April -> message").build();
 
@@ -95,7 +95,7 @@ public class CommandBuilderTest {
 
     @Test
     public void testBuild_postingMultiWordNameWithMultiWordMessage_validCommand() throws Exception {
-        User alice = userService.createUser("Alice April");
+        User alice = userRepository.createUser("Alice April");
 
         Command command = new CommandBuilder().forString("Alice April -> message with spaces").build();
 
@@ -107,7 +107,7 @@ public class CommandBuilderTest {
 
     @Test
     public void testBuild_postingEmptyMessage_validCommand() throws Exception {
-        User alice = userService.createUser("Alice");
+        User alice = userRepository.createUser("Alice");
 
         Command command = new CommandBuilder().forString("Alice ->").build();
         assertThat(command.getCommandType(), is(Command.CommandType.POST));

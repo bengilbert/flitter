@@ -10,7 +10,7 @@ import java.util.Optional;
  * Created by bengilbert on 2/05/15.
  */
 @Service
-public class UserService {
+public class UserRepository {
 
     private Map<String, User> users = new HashMap<>();
 
@@ -33,7 +33,6 @@ public class UserService {
             throw new RuntimeException("Cannot create user " + name + " as user already exists");
         }
 
-        //TODO change to Optional type
         User user = new User(name);
         users.put(name.toLowerCase(), user);
         return user;

@@ -19,40 +19,40 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FlitterConfig.class)
-public class UserServiceTest {
+public class UserRepositoryTest {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Before
     public void setup() {
-        userService.reset();
+        userRepository.reset();
     }
 
     @Test
     public void testFindByName_nameDoesntExist_returnsEmptyOptional() throws Exception {
 
-        Optional<User> user = userService.findByName("unknown");
+        Optional<User> user = userRepository.findByName("unknown");
         assertThat(user.isPresent(), is(false));
     }
 
     @Test
     public void testFindByName_nameExist_returnsPopulatedOptional() throws Exception {
-        userService.createUser("alice");
+        userRepository.createUser("alice");
 
-        Optional<User> user = userService.findByName("alice");
+        Optional<User> user = userRepository.findByName("alice");
         assertThat(user.isPresent(), is(true));
     }
 
     @Test
     public void testCreateUser_nameDoesntExist_createsUser() throws Exception {
-        User user = userService.createUser("alice");
+        User user = userRepository.createUser("alice");
         assertThat(user, is(notNullValue()));
     }
 
     @Test(expected = RuntimeException.class)
     public void testCreateUser_nameExist_doesntCreateUser() throws Exception {
-        userService.createUser("alice");
-        userService.createUser("alice");
+        userRepository.createUser("alice");
+        userRepository.createUser("alice");
     }
 }
