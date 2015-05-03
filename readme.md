@@ -35,10 +35,11 @@ This will present you with a fairly minimalist user interface:
 From here you can post messages to a wall, view messages from any other user and also follow other users.
 
 | Action             | Syntax | Example |
-| Posting            | <user-name> -> <message to post> | Rebecca -> Just ran my first marathon.  Feeling estatic! | 
-| Following          | <user-name> follows <user-name-to-follow> | Rebecca follows Martin |
-| Viewing a timeline | <user-name> | Rebecca |
-| Viewing a wall     | <user-name> wall | Rebecca wall |
+|--------------------|--------|---------|
+| Posting            | `<user-name> -> <message to post>` | `Rebecca -> Just ran my first marathon.  Feeling estatic!` | 
+| Following          | `<user-name> follows <user-name-to-follow>` | `Rebecca follows Martin` |
+| Viewing a timeline | `<user-name>` | `Rebecca` |
+| Viewing a wall     | `<user-name> wall` | `Rebecca wall` |
 
 To exit the application press enter at the command prompt.
 
