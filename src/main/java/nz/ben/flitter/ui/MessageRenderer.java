@@ -4,7 +4,11 @@ import nz.ben.flitter.message.Message;
 import org.joda.time.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -12,6 +16,27 @@ import java.util.stream.Collectors;
  */
 @Component
 public class MessageRenderer {
+
+    private static final BiFunction<DateTime, DateTime, Integer> deltaSeconds = (d1, d2) -> Seconds.secondsBetween(d1, d2).getSeconds();
+    private static final BiFunction<DateTime, DateTime, Integer> deltaMinutes = (d1, d2) -> Minutes.minutesBetween(d1, d2).getMinutes();
+    private static final BiFunction<DateTime, DateTime, Integer> deltaHours = (d1, d2) -> Hours.hoursBetween(d1, d2).getHours();
+    private static final BiFunction<DateTime, DateTime, Integer> deltaDays = (d1, d2) -> Days.daysBetween(d1, d2).getDays();
+
+    private static final Function<Integer, Boolean> alwaysValid = x -> true;
+    private static final Function<Integer, Boolean> validWhenLessThanSixty = s -> s < 60;
+    private static final Function<Integer, Boolean> validWhenZero = s -> s == 0;
+    private static final Function<Integer, Boolean> validWhenLessThan24 = s -> s < 24;
+
+    private static final List<MessageRenderRule> renderRules = new ArrayList<>();
+
+    static {
+        // rules executed in order that they are defined until one is found that validate or the last rule is run
+        renderRules.add(new MessageRenderRule(deltaSeconds, validWhenZero, "second"));
+        renderRules.add(new MessageRenderRule(deltaSeconds, validWhenLessThanSixty, "second"));
+        renderRules.add(new MessageRenderRule(deltaMinutes, validWhenLessThanSixty, "minute"));
+        renderRules.add(new MessageRenderRule(deltaHours, validWhenLessThan24, "hour"));
+        renderRules.add(new MessageRenderRule(deltaDays, alwaysValid, "day"));
+    }
 
     public String render(Collection<Message> messages) {
         String response = "";
@@ -24,31 +49,15 @@ public class MessageRenderer {
     private String render(Message message) {
         DateTime now = DateTime.now();
         DateTime past = message.getDateTime();
-        int seconds = Seconds.secondsBetween(past, now).getSeconds();
-        int minutes = Minutes.minutesBetween(past, now).getMinutes();
-        int hours = Hours.hoursBetween(past, now).getHours();
-        int days = Days.daysBetween(past, now).getDays();
 
-        int count = 0;
-        String unit;
-
-        if (seconds == 0) {
-            return message.getMessage() + " (just now)";
-        } else if (seconds < 60) {
-            count = seconds;
-            unit = "second";
-        } else if (minutes < 60) {
-            count = minutes;
-            unit = "minute";
-        } else if (hours < 24) {
-            count = hours;
-            unit = "minute";
-        } else {
-            count = days;
-            unit = "day";
+        // loop through rules
+        for (MessageRenderRule r : renderRules) {
+            if (r.passes(now, past)) {
+                return message.getMessage() + " (" + renderRelativeDateTimeString(r.getDelta(now, past), r.getSingletonDisplayUnit()) + ")";
+            }
         }
 
-        return message.getMessage() + " (" + renderRelativeDateTimeString(count, unit) + ")";
+        throw new RuntimeException("Last rule must always be valid.  Please check rule definition.");
     }
 
     private String renderRelativeDateTimeString(int unitValue, String singularUnit) {
