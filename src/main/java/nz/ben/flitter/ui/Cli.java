@@ -1,10 +1,13 @@
 package nz.ben.flitter.ui;
 
 import nz.ben.flitter.message.Message;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 
 /**
  * Created by bengilbert on 25/04/15.
@@ -29,6 +32,9 @@ public class Cli {
             System.out.print("> ");
             command = System.console().readLine();
             Collection<Message> messages = interpreter.interpretCommand(command);
+
+            //TODO order messages earliest first
+
             System.out.println(messageRenderer.render(messages));
         } while (!command.isEmpty());
 

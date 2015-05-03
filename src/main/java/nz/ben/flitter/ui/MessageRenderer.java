@@ -16,40 +16,42 @@ public class MessageRenderer {
     public String render(Collection<Message> messages) {
         String response = "";
         if (!messages.isEmpty()) {
-            response = messages
-                    .stream()
-                    .map(m -> m.getMessage() + " (" + toRelativeDateString(m.getDateTime()) + ")")
-                    .collect(Collectors.joining("\n"));
+            response = messages.stream().map(m -> render(m)).collect(Collectors.joining("\n"));
         }
         return response;
     }
 
-    private String toRelativeDateString(DateTime dateTime) {
+    private String render(Message message) {
         DateTime now = DateTime.now();
-        int seconds = Seconds.secondsBetween(dateTime, now).getSeconds();
+        DateTime past = message.getDateTime();
+        int seconds = Seconds.secondsBetween(past, now).getSeconds();
+        int minutes = Minutes.minutesBetween(past, now).getMinutes();
+        int hours = Hours.hoursBetween(past, now).getHours();
+        int days = Days.daysBetween(past, now).getDays();
+
+        int count = 0;
+        String unit;
+
         if (seconds == 0) {
-            return "just now";
+            return message.getMessage() + " (just now)";
+        } else if (seconds < 60) {
+            count = seconds;
+            unit = "second";
+        } else if (minutes < 60) {
+            count = minutes;
+            unit = "minute";
+        } else if (hours < 24) {
+            count = hours;
+            unit = "minute";
+        } else {
+            count = days;
+            unit = "day";
         }
 
-        if (seconds < 60) {
-            return singularOrPlural(seconds, "second");
-        }
-
-        int minutes = Minutes.minutesBetween(dateTime, now).getMinutes();
-        if (minutes < 60) {
-            return singularOrPlural(minutes, "minute");
-        }
-
-        int hours = Hours.hoursBetween(dateTime, now).getHours();
-        if (hours < 24) {
-            return singularOrPlural(hours, "hour");
-        }
-
-        int days = Days.daysBetween(dateTime, now).getDays();
-        return singularOrPlural(days, "day");
+        return message.getMessage() + " (" + renderRelativeDateTimeString(count, unit) + ")";
     }
 
-    private String singularOrPlural(int value, String singular) {
-        return value + " " + (value == 1 ? singular : singular + "s") + " ago";
+    private String renderRelativeDateTimeString(int unitValue, String singularUnit) {
+        return unitValue + " " + (unitValue == 1 ? singularUnit : singularUnit + "s") + " ago";
     }
 }
