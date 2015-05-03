@@ -37,7 +37,7 @@ public class ShadowUser {
     }
 
     public Collection<Message> viewTimeline() {
-        return interpreter.interpretCommand(userName);
+        return interpreter.interpretCommand(userName).getMessages();
     }
 
     public void follow(final ShadowUser otherShadowUser) {
@@ -48,7 +48,7 @@ public class ShadowUser {
     }
 
     public Collection<Message> viewWall() {
-        return interpreter.interpretCommand(userName + " wall");
+        return interpreter.interpretCommand(userName + " wall").getMessages();
     }
 
 

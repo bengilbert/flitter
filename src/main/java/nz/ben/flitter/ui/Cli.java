@@ -1,12 +1,10 @@
 package nz.ben.flitter.ui;
 
-import nz.ben.flitter.message.Message;
+import nz.ben.flitter.command.Response;
 import nz.ben.flitter.ui.interpreter.CommandInterpreter;
 import nz.ben.flitter.ui.render.MessageRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 /**
  * Created by bengilbert on 25/04/15.
@@ -31,9 +29,11 @@ public class Cli {
             System.out.print("> ");
             command = System.console().readLine();
 
-            Collection<Message> messages = interpreter.interpretCommand(command);
+            Response response = interpreter.interpretCommand(command);
 
-            System.out.println(messageRenderer.render(messages));
+            if (response.hasMessages()) {
+                System.out.println(messageRenderer.render(response.getMessages()));
+            }
         } while (!command.isEmpty());
 
     }
