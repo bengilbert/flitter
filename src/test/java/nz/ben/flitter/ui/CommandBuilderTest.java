@@ -2,6 +2,7 @@ package nz.ben.flitter.ui;
 
 import nz.ben.flitter.command.Command;
 import nz.ben.flitter.command.CommandBuilder;
+import nz.ben.flitter.command.CommandType;
 import nz.ben.flitter.config.FlitterConfig;
 import nz.ben.flitter.user.User;
 import nz.ben.flitter.user.UserRepository;
@@ -34,7 +35,7 @@ public class CommandBuilderTest {
     @Test()
     public void testBuild_blankString_isUnknown() {
         Command command = new CommandBuilder().forString("").build();
-        assertThat(command.getCommandType(), is(Command.CommandType.UNKNOWN));
+        assertThat(command.getCommandType(), is(CommandType.UNKNOWN));
         assertThat(command.getCommandDetail(), isEmptyString());
     }
 
@@ -43,7 +44,7 @@ public class CommandBuilderTest {
         User alice = userRepository.createUser("Alice");
 
         Command command = new CommandBuilder().forString("Alice").build();
-        assertThat(command.getCommandType(), is(Command.CommandType.VIEW_TIMELINE));
+        assertThat(command.getCommandType(), is(CommandType.VIEW_TIMELINE));
         assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), isEmptyString());
     }
@@ -55,7 +56,7 @@ public class CommandBuilderTest {
 
         Command command = new CommandBuilder().forString("Alice follows Charles").build();
 
-        assertThat(command.getCommandType(), is(Command.CommandType.FOLLOW));
+        assertThat(command.getCommandType(), is(CommandType.FOLLOW));
         assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), is(charles.getUserName()));
     }
@@ -66,7 +67,7 @@ public class CommandBuilderTest {
 
         Command command = new CommandBuilder().forString("Alice -> message").build();
 
-        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getCommandType(), is(CommandType.POST));
         assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), is("message"));
     }
@@ -77,7 +78,7 @@ public class CommandBuilderTest {
 
         Command command = new CommandBuilder().forString("Alice -> message with spaces").build();
 
-        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getCommandType(), is(CommandType.POST));
         assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), is("message with spaces"));
     }
@@ -88,7 +89,7 @@ public class CommandBuilderTest {
 
         Command command = new CommandBuilder().forString("Alice April -> message").build();
 
-        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getCommandType(), is(CommandType.POST));
         assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), is("message"));
     }
@@ -99,7 +100,7 @@ public class CommandBuilderTest {
 
         Command command = new CommandBuilder().forString("Alice April -> message with spaces").build();
 
-        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getCommandType(), is(CommandType.POST));
         assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), is("message with spaces"));
     }
@@ -110,7 +111,7 @@ public class CommandBuilderTest {
         User alice = userRepository.createUser("Alice");
 
         Command command = new CommandBuilder().forString("Alice ->").build();
-        assertThat(command.getCommandType(), is(Command.CommandType.POST));
+        assertThat(command.getCommandType(), is(CommandType.POST));
         assertThat(command.getUser(), is(alice));
         assertThat(command.getCommandDetail(), isEmptyString());
     }

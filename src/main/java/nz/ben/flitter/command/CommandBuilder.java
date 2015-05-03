@@ -23,17 +23,17 @@ public class CommandBuilder {
         Matcher m = p.matcher(command);
 
         String userName = null;
-        Command.CommandType commandType = Command.CommandType.UNKNOWN;
+        CommandType commandType = CommandType.UNKNOWN;
         String commandDetail = null;
 
         if (!m.matches() && !command.isEmpty()) {
             //assume viewing posts for a user when the regex mtches nothing.
             userName = command;
-            commandType = Command.CommandType.VIEW_TIMELINE;
+            commandType = CommandType.VIEW_TIMELINE;
             commandDetail = "";
         } else if (!m.matches() && command.isEmpty()) {
             userName = "";
-            commandType = Command.CommandType.UNKNOWN;
+            commandType = CommandType.UNKNOWN;
             commandDetail = "";
         } else {
 
@@ -41,16 +41,16 @@ public class CommandBuilder {
 
             switch (m.group(2)) {
                 case "->":
-                    commandType = Command.CommandType.POST;
+                    commandType = CommandType.POST;
                     break;
                 case "follows":
-                    commandType = Command.CommandType.FOLLOW;
+                    commandType = CommandType.FOLLOW;
                     break;
                 case "wall":
-                    commandType = Command.CommandType.VIEW_WALL;
+                    commandType = CommandType.VIEW_WALL;
                     break;
                 default:
-                    commandType = Command.CommandType.UNKNOWN;
+                    commandType = CommandType.UNKNOWN;
             }
 
             commandDetail = "";
