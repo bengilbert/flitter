@@ -1,7 +1,7 @@
 package nz.ben.flitter.cucumber.domain;
 
 import nz.ben.flitter.message.Message;
-import nz.ben.flitter.ui.CommandInterpreter;
+import nz.ben.flitter.ui.interpreter.CommandInterpreter;
 import nz.ben.flitter.user.User;
 import nz.ben.flitter.user.UserRepository;
 import org.apache.commons.collections4.SetUtils;

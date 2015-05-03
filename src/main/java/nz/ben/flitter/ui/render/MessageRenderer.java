@@ -1,4 +1,4 @@
-package nz.ben.flitter.ui;
+package nz.ben.flitter.ui.render;
 
 import nz.ben.flitter.message.Message;
 import org.joda.time.*;
@@ -17,21 +17,21 @@ import java.util.stream.Collectors;
 @Component
 public class MessageRenderer {
 
-    private static final BiFunction<DateTime, DateTime, Integer> deltaSeconds = (d1, d2) -> Seconds.secondsBetween(d1, d2).getSeconds();
-    private static final BiFunction<DateTime, DateTime, Integer> deltaMinutes = (d1, d2) -> Minutes.minutesBetween(d1, d2).getMinutes();
-    private static final BiFunction<DateTime, DateTime, Integer> deltaHours = (d1, d2) -> Hours.hoursBetween(d1, d2).getHours();
-    private static final BiFunction<DateTime, DateTime, Integer> deltaDays = (d1, d2) -> Days.daysBetween(d1, d2).getDays();
+    private final BiFunction<DateTime, DateTime, Integer> deltaSeconds = (d1, d2) -> Seconds.secondsBetween(d1, d2).getSeconds();
+    private final BiFunction<DateTime, DateTime, Integer> deltaMinutes = (d1, d2) -> Minutes.minutesBetween(d1, d2).getMinutes();
+    private final BiFunction<DateTime, DateTime, Integer> deltaHours = (d1, d2) -> Hours.hoursBetween(d1, d2).getHours();
+    private final BiFunction<DateTime, DateTime, Integer> deltaDays = (d1, d2) -> Days.daysBetween(d1, d2).getDays();
 
-    private static final Function<Integer, Boolean> alwaysValid = x -> true;
-    private static final Function<Integer, Boolean> validWhenZero = s -> s == 0;
-    private static final Function<Integer, Function<Integer, Boolean>> validWhenLessThan = x -> y -> y < x;
+    private final Function<Integer, Boolean> alwaysValid = x -> true;
+    private final Function<Integer, Boolean> validWhenZero = s -> s == 0;
+    private final Function<Integer, Function<Integer, Boolean>> validWhenLessThan = x -> y -> y < x;
 
-    private static final Function<String, Function<Integer, String>> agoRenderer = u -> x -> x + " " + (x == 1 ? u : u + "s") + " ago";
-    private static final Function<Integer, String> justNowRenderer = i -> "just now";
+    private final Function<String, Function<Integer, String>> agoRenderer = u -> x -> x + " " + (x == 1 ? u : u + "s") + " ago";
+    private final Function<Integer, String> justNowRenderer = i -> "just now";
 
-    private static final List<MessageRenderRule> renderRules = new ArrayList<>();
+    private final List<MessageRenderRule> renderRules = new ArrayList<>();
 
-    static {
+    public MessageRenderer() {
         // rules executed in order that they are defined until one is found that is valid or the last rule is run
         renderRules.add(new MessageRenderRule(deltaSeconds, validWhenZero, justNowRenderer));
         renderRules.add(new MessageRenderRule(deltaSeconds, validWhenLessThan.apply(60), agoRenderer.apply("second")));
@@ -51,10 +51,12 @@ public class MessageRenderer {
     private String render(Message message) {
         DateTime now = DateTime.now();
         DateTime past = message.getDateTime();
-        
+
         for (MessageRenderRule r : renderRules) {
-            if (r.passes(now, past)) {
-                return message.getMessage() + " (" + r.getRenderer().apply(r.getDelta(now, past)) + ")";
+            int delta = r.delta().apply(now, past);
+
+            if (r.compare().apply(delta)) {
+                return message.getMessage() + " (" + r.render().apply(delta) + ")";
             }
         }
 

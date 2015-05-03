@@ -1,4 +1,4 @@
-package nz.ben.flitter.ui;
+package nz.ben.flitter.ui.render;
 
 import org.joda.time.DateTime;
 
@@ -7,6 +7,8 @@ import java.util.function.Function;
 
 /**
  * Created by bengilbert on 3/05/15.
+ * <p>
+ * Wrapper object containing required functions to render a relative datetime string.
  */
 public class MessageRenderRule {
 
@@ -21,17 +23,15 @@ public class MessageRenderRule {
         this.comparator = comparator;
     }
 
-    public boolean passes(final DateTime now, final DateTime then) {
-        int delta = dateDeltaFunction.apply(then, now);
-
-        return comparator.apply(delta);
+    public Function<Integer, Boolean> compare() {
+        return this.comparator;
     }
 
-    public Function<Integer, String> getRenderer() {
+    public Function<Integer, String> render() {
         return this.renderer;
     }
 
-    public int getDelta(final DateTime now, final DateTime then) {
-        return dateDeltaFunction.apply(then, now);
+    public BiFunction<DateTime, DateTime, Integer> delta() {
+        return this.dateDeltaFunction;
     }
 }

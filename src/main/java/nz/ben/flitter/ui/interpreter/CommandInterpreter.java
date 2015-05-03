@@ -1,4 +1,4 @@
-package nz.ben.flitter.ui;
+package nz.ben.flitter.ui.interpreter;
 
 import nz.ben.flitter.command.Command;
 import nz.ben.flitter.command.CommandBuilder;

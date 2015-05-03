@@ -1,6 +1,7 @@
 package nz.ben.flitter.ui;
 
 import nz.ben.flitter.message.Message;
+import nz.ben.flitter.ui.render.MessageRenderer;
 import nz.ben.flitter.user.User;
 import org.joda.time.DateTime;
 import org.junit.Test;

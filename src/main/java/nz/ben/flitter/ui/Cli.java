@@ -1,6 +1,8 @@
 package nz.ben.flitter.ui;
 
 import nz.ben.flitter.message.Message;
+import nz.ben.flitter.ui.interpreter.CommandInterpreter;
+import nz.ben.flitter.ui.render.MessageRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
