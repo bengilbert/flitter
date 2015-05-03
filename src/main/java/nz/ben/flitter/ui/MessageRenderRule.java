@@ -12,12 +12,12 @@ public class MessageRenderRule {
 
     private BiFunction<DateTime, DateTime, Integer> dateDeltaFunction = null;
     private Function<Integer, Boolean> comparator = null;
-    private String singletonDisplayUnit = null;
+    private Function<Integer, String> renderer;
 
 
-    public MessageRenderRule(BiFunction<DateTime, DateTime, Integer> dateDelta, Function<Integer, Boolean> comparator, String singletonDisplayUnit) {
+    public MessageRenderRule(BiFunction<DateTime, DateTime, Integer> dateDelta, Function<Integer, Boolean> comparator, Function<Integer, String> renderer) {
         this.dateDeltaFunction = dateDelta;
-        this.singletonDisplayUnit = singletonDisplayUnit;
+        this.renderer = renderer;
         this.comparator = comparator;
     }
 
@@ -27,8 +27,8 @@ public class MessageRenderRule {
         return comparator.apply(delta);
     }
 
-    public String getSingletonDisplayUnit() {
-        return this.singletonDisplayUnit;
+    public Function<Integer, String> getRenderer() {
+        return this.renderer;
     }
 
     public int getDelta(final DateTime now, final DateTime then) {

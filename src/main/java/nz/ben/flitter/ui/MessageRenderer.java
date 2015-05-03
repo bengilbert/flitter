@@ -23,19 +23,21 @@ public class MessageRenderer {
     private static final BiFunction<DateTime, DateTime, Integer> deltaDays = (d1, d2) -> Days.daysBetween(d1, d2).getDays();
 
     private static final Function<Integer, Boolean> alwaysValid = x -> true;
-    private static final Function<Integer, Boolean> validWhenLessThanSixty = s -> s < 60;
     private static final Function<Integer, Boolean> validWhenZero = s -> s == 0;
-    private static final Function<Integer, Boolean> validWhenLessThan24 = s -> s < 24;
+    private static final Function<Integer, Function<Integer, Boolean>> validWhenLessThan = x -> y -> y < x;
+
+    private static final Function<String, Function<Integer, String>> agoRenderer = u -> x -> x + " " + (x == 1 ? u : u + "s") + " ago";
+    private static final Function<Integer, String> justNowRenderer = i -> "just now";
 
     private static final List<MessageRenderRule> renderRules = new ArrayList<>();
 
     static {
-        // rules executed in order that they are defined until one is found that validate or the last rule is run
-        renderRules.add(new MessageRenderRule(deltaSeconds, validWhenZero, "second"));
-        renderRules.add(new MessageRenderRule(deltaSeconds, validWhenLessThanSixty, "second"));
-        renderRules.add(new MessageRenderRule(deltaMinutes, validWhenLessThanSixty, "minute"));
-        renderRules.add(new MessageRenderRule(deltaHours, validWhenLessThan24, "hour"));
-        renderRules.add(new MessageRenderRule(deltaDays, alwaysValid, "day"));
+        // rules executed in order that they are defined until one is found that is valid or the last rule is run
+        renderRules.add(new MessageRenderRule(deltaSeconds, validWhenZero, justNowRenderer));
+        renderRules.add(new MessageRenderRule(deltaSeconds, validWhenLessThan.apply(60), agoRenderer.apply("second")));
+        renderRules.add(new MessageRenderRule(deltaMinutes, validWhenLessThan.apply(60), agoRenderer.apply("minute")));
+        renderRules.add(new MessageRenderRule(deltaHours, validWhenLessThan.apply(24), agoRenderer.apply("hour")));
+        renderRules.add(new MessageRenderRule(deltaDays, alwaysValid, agoRenderer.apply("day")));
     }
 
     public String render(Collection<Message> messages) {
@@ -49,18 +51,14 @@ public class MessageRenderer {
     private String render(Message message) {
         DateTime now = DateTime.now();
         DateTime past = message.getDateTime();
-
-        // loop through rules
+        
         for (MessageRenderRule r : renderRules) {
             if (r.passes(now, past)) {
-                return message.getMessage() + " (" + renderRelativeDateTimeString(r.getDelta(now, past), r.getSingletonDisplayUnit()) + ")";
+                return message.getMessage() + " (" + r.getRenderer().apply(r.getDelta(now, past)) + ")";
             }
         }
 
-        throw new RuntimeException("Last rule must always be valid.  Please check rule definition.");
+        throw new RuntimeException("Last rule must always be valid.  Please check rule definitions.");
     }
 
-    private String renderRelativeDateTimeString(int unitValue, String singularUnit) {
-        return unitValue + " " + (unitValue == 1 ? singularUnit : singularUnit + "s") + " ago";
-    }
 }
