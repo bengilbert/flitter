@@ -1,7 +1,7 @@
 package nz.ben.flitter.ui;
 
 import nz.ben.flitter.command.Command;
-import nz.ben.flitter.command.CommandBuilder;
+import nz.ben.flitter.ui.command.CommandBuilder;
 import nz.ben.flitter.command.CommandType;
 import nz.ben.flitter.config.FlitterConfig;
 import nz.ben.flitter.user.User;

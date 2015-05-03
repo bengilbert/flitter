@@ -16,14 +16,11 @@ public class Command {
     @Autowired
     private UserRepository userRepository;
 
-    //public enum CommandType {POST, FOLLOW, VIEW_TIMELINE, VIEW_WALL, UNKNOWN}
-
-
     private String userName;
     private CommandType commandType;
     private String commandDetail;
 
-    /* package */ Command(final String userName, final CommandType type, final String commandDetail) {
+    public Command(final String userName, final CommandType type, final String commandDetail) {
         this.userName = userName;
         this.commandType = type;
         this.commandDetail = commandDetail;
@@ -50,17 +47,17 @@ public class Command {
         return this.commandDetail;
     }
 
-    public Response execute() {
-        Response response = new Response(commandType);
+    public CommandResponse execute() {
+        CommandResponse commandResponse = new CommandResponse(commandType);
         switch (getCommandType()) {
             case POST:
                 getUser().postMessage(getCommandDetail());
                 break;
             case VIEW_WALL:
-                response.setMessages(getUser().wall());
+                commandResponse.setMessages(getUser().wall());
                 break;
             case VIEW_TIMELINE:
-                response.setMessages(getUser().timeline());
+                commandResponse.setMessages(getUser().timeline());
                 break;
             case FOLLOW:
                 User otherUser = getOtherUser().orElseThrow(IllegalStateException::new);
@@ -70,7 +67,7 @@ public class Command {
         }
 
 
-        return response;
+        return commandResponse;
     }
 
 

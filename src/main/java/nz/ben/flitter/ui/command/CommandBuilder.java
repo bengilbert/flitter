@@ -1,5 +1,7 @@
-package nz.ben.flitter.command;
+package nz.ben.flitter.ui.command;
 
+import nz.ben.flitter.command.Command;
+import nz.ben.flitter.command.CommandType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.regex.Matcher;

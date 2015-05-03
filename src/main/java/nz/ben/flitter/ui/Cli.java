@@ -1,8 +1,8 @@
 package nz.ben.flitter.ui;
 
-import nz.ben.flitter.command.Response;
+import nz.ben.flitter.command.CommandResponse;
 import nz.ben.flitter.ui.interpreter.CommandInterpreter;
-import nz.ben.flitter.ui.render.MessageRenderer;
+import nz.ben.flitter.ui.render.ResponseRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class Cli {
     private CommandInterpreter interpreter;
 
     @Autowired
-    private MessageRenderer messageRenderer;
+    private ResponseRenderer responseRenderer;
 
     public void start() {
         if (System.console() == null) {
@@ -29,10 +29,10 @@ public class Cli {
             System.out.print("> ");
             command = System.console().readLine();
 
-            Response response = interpreter.interpretCommand(command);
+            CommandResponse commandResponse = interpreter.interpretCommand(command);
 
-            if (response.hasMessages()) {
-                System.out.println(messageRenderer.render(response.getMessages()));
+            if (commandResponse.hasMessages()) {
+                System.out.println(responseRenderer.render(commandResponse));
             }
         } while (!command.isEmpty());
 

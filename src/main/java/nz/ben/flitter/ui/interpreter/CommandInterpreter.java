@@ -1,8 +1,8 @@
 package nz.ben.flitter.ui.interpreter;
 
 import nz.ben.flitter.command.Command;
-import nz.ben.flitter.command.CommandBuilder;
-import nz.ben.flitter.command.Response;
+import nz.ben.flitter.ui.command.CommandBuilder;
+import nz.ben.flitter.command.CommandResponse;
 import org.springframework.stereotype.Service;
 
 
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommandInterpreter {
 
-    public Response interpretCommand(final String commandText) {
+    public CommandResponse interpretCommand(final String commandText) {
         Command command = new CommandBuilder().forString(commandText).build();
-        Response response = command.execute();
+        CommandResponse commandResponse = command.execute();
 
-        return response;
+        return commandResponse;
     }
 }

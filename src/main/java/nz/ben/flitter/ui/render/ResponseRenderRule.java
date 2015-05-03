@@ -18,7 +18,7 @@ public class ResponseRenderRule {
         this.comparator = comparator;
     }
 
-    public IntComparatorFunction compare() {
+    public IntComparatorFunction ruleApplies() {
         return this.comparator;
     }
 
