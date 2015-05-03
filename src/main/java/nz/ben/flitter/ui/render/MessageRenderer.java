@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -17,17 +16,17 @@ import java.util.stream.Collectors;
 @Component
 public class MessageRenderer {
 
-    private final BiFunction<DateTime, DateTime, Integer> deltaSeconds = (d1, d2) -> Seconds.secondsBetween(d1, d2).getSeconds();
-    private final BiFunction<DateTime, DateTime, Integer> deltaMinutes = (d1, d2) -> Minutes.minutesBetween(d1, d2).getMinutes();
-    private final BiFunction<DateTime, DateTime, Integer> deltaHours = (d1, d2) -> Hours.hoursBetween(d1, d2).getHours();
-    private final BiFunction<DateTime, DateTime, Integer> deltaDays = (d1, d2) -> Days.daysBetween(d1, d2).getDays();
+    private final DateDeltaFunction deltaSeconds = (d1, d2) -> Seconds.secondsBetween(d1, d2).getSeconds();
+    private final DateDeltaFunction deltaMinutes = (d1, d2) -> Minutes.minutesBetween(d1, d2).getMinutes();
+    private final DateDeltaFunction deltaHours = (d1, d2) -> Hours.hoursBetween(d1, d2).getHours();
+    private final DateDeltaFunction deltaDays = (d1, d2) -> Days.daysBetween(d1, d2).getDays();
 
-    private final Function<Integer, Boolean> alwaysValid = x -> true;
-    private final Function<Integer, Boolean> validWhenZero = s -> s == 0;
-    private final Function<Integer, Function<Integer, Boolean>> validWhenLessThan = x -> y -> y < x;
+    private final IntComparatorFunction alwaysValid = x -> true;
+    private final IntComparatorFunction validWhenZero = s -> s == 0;
+    private final Function<Integer, IntComparatorFunction> validWhenLessThan = x -> y -> y < x;
 
-    private final Function<String, Function<Integer, String>> agoRenderer = u -> x -> x + " " + (x == 1 ? u : u + "s") + " ago";
-    private final Function<Integer, String> justNowRenderer = i -> "just now";
+    private final Function<String, RelativeDateRenderFunction> agoRenderer = u -> x -> x + " " + (x == 1 ? u : u + "s") + " ago";
+    private final RelativeDateRenderFunction justNowRenderer = i -> "just now";
 
     private final List<MessageRenderRule> renderRules = new ArrayList<>();
 
@@ -43,7 +42,11 @@ public class MessageRenderer {
     public String render(Collection<Message> messages) {
         String response = "";
         if (!messages.isEmpty()) {
-            response = messages.stream().map(m -> render(m)).collect(Collectors.joining("\n"));
+            response = messages
+                    .stream()
+                    .sorted((m1, m2) -> m1.getDateTime().compareTo(m2.getDateTime()))
+                    .map(m -> render(m))
+                    .collect(Collectors.joining("\n"));
         }
         return response;
     }
@@ -53,7 +56,7 @@ public class MessageRenderer {
         DateTime past = message.getDateTime();
 
         for (MessageRenderRule r : renderRules) {
-            int delta = r.delta().apply(now, past);
+            int delta = r.delta().apply(past, now);
 
             if (r.compare().apply(delta)) {
                 return message.getMessage() + " (" + r.render().apply(delta) + ")";

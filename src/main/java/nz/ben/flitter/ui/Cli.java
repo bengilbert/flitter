@@ -30,9 +30,8 @@ public class Cli {
         do {
             System.out.print("> ");
             command = System.console().readLine();
-            Collection<Message> messages = interpreter.interpretCommand(command);
 
-            //TODO order messages earliest first
+            Collection<Message> messages = interpreter.interpretCommand(command);
 
             System.out.println(messageRenderer.render(messages));
         } while (!command.isEmpty());

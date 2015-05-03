@@ -1,10 +1,5 @@
 package nz.ben.flitter.ui.render;
 
-import org.joda.time.DateTime;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 /**
  * Created by bengilbert on 3/05/15.
  * <p>
@@ -12,26 +7,26 @@ import java.util.function.Function;
  */
 public class MessageRenderRule {
 
-    private BiFunction<DateTime, DateTime, Integer> dateDeltaFunction = null;
-    private Function<Integer, Boolean> comparator = null;
-    private Function<Integer, String> renderer;
+    private DateDeltaFunction dateDeltaFunction = null;
+    private IntComparatorFunction comparator = null;
+    private RelativeDateRenderFunction renderer;
 
 
-    public MessageRenderRule(BiFunction<DateTime, DateTime, Integer> dateDelta, Function<Integer, Boolean> comparator, Function<Integer, String> renderer) {
+    public MessageRenderRule(DateDeltaFunction dateDelta, IntComparatorFunction comparator, RelativeDateRenderFunction renderer) {
         this.dateDeltaFunction = dateDelta;
         this.renderer = renderer;
         this.comparator = comparator;
     }
 
-    public Function<Integer, Boolean> compare() {
+    public IntComparatorFunction compare() {
         return this.comparator;
     }
 
-    public Function<Integer, String> render() {
+    public RelativeDateRenderFunction render() {
         return this.renderer;
     }
 
-    public BiFunction<DateTime, DateTime, Integer> delta() {
+    public DateDeltaFunction delta() {
         return this.dateDeltaFunction;
     }
 }
