@@ -74,5 +74,5 @@ public class MessageRendererTest {
 
         assertThat(messageRenderer.render(messages), isEmptyString());
     }
-    
+
 }
