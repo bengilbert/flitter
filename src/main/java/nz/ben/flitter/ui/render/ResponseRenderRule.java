@@ -5,14 +5,14 @@ package nz.ben.flitter.ui.render;
  * <p>
  * Wrapper object containing required functions to render a relative datetime string.
  */
-public class MessageRenderRule {
+public class ResponseRenderRule {
 
     private DateDeltaFunction dateDeltaFunction = null;
     private IntComparatorFunction comparator = null;
     private RelativeDateRenderFunction renderer;
 
 
-    public MessageRenderRule(DateDeltaFunction dateDelta, IntComparatorFunction comparator, RelativeDateRenderFunction renderer) {
+    public ResponseRenderRule(DateDeltaFunction dateDelta, IntComparatorFunction comparator, RelativeDateRenderFunction renderer) {
         this.dateDeltaFunction = dateDelta;
         this.renderer = renderer;
         this.comparator = comparator;

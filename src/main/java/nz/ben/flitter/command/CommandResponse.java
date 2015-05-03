@@ -8,12 +8,12 @@ import java.util.Collection;
 /**
  * Created by bengilbert on 3/05/15.
  */
-public class Response {
+public class CommandResponse {
 
     private CommandType commandType;
     private Collection<Message> messages;
 
-    public Response(CommandType commandType) {
+    public CommandResponse(CommandType commandType) {
         this.commandType = commandType;
         messages = CollectionUtils.emptyCollection();
     }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * Created by bengilbert on 2/05/15.
  */
 @Component
-public class MessageRenderer {
+public class ResponseRenderer {
 
     private final DateDeltaFunction deltaSeconds = (d1, d2) -> Seconds.secondsBetween(d1, d2).getSeconds();
     private final DateDeltaFunction deltaMinutes = (d1, d2) -> Minutes.minutesBetween(d1, d2).getMinutes();
@@ -30,7 +30,7 @@ public class MessageRenderer {
 
     private final List<MessageRenderRule> renderRules = new ArrayList<>();
 
-    public MessageRenderer() {
+    public ResponseRenderer() {
         // rules executed in order that they are defined until one is found that is valid or the last rule is run
         renderRules.add(new MessageRenderRule(deltaSeconds, validWhenZero, justNowRenderer));
         renderRules.add(new MessageRenderRule(deltaSeconds, validWhenLessThan.apply(60), agoRenderer.apply("second")));
