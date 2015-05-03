@@ -44,14 +44,14 @@ public class MessageRenderer {
         if (!messages.isEmpty()) {
             response = messages
                     .stream()
-                    .sorted((m1, m2) -> m1.getDateTime().compareTo(m2.getDateTime()))
+                    .sorted((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()))
                     .map(m -> render(m))
                     .collect(Collectors.joining("\n"));
         }
         return response;
     }
 
-    private String render(Message message) {
+    public String render(Message message) {
         DateTime now = DateTime.now();
         DateTime past = message.getDateTime();
 
