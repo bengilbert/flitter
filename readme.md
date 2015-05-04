@@ -34,6 +34,8 @@ java -jar flitter-1.0-jar-with-dependencies.jar
 
 Note : you will need java8 installed to run the jar file.
 
+## Runnning
+
 After running the application you will be presented with a fairly minimalist user interface:
 
 ```
