@@ -26,7 +26,15 @@ The simplest way to run the application after cloning is:
 mvn clean compile exec:java
 ```
 
-This will present you with a fairly minimalist user interface:
+Or, you can run one of the pre-built releases using `java -jar flitter-VX.X-with-dependencies.jar` (where X.X is the version number you have downloaded) for example:
+
+```
+java -jar flitter-1.0-jar-with-dependencies.jar
+```
+
+Note : you will need java8 installed to run the jar file.
+
+After running the application you will be presented with a fairly minimalist user interface:
 
 ```
 > 
