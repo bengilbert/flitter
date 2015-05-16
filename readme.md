@@ -12,8 +12,28 @@ Additionally you will find the following
 
 * Spring Java Configuration - no xml files
 * Spring @Configurable support to facilitate with DDD patterns.  
-* Cucumber-jvm BDD tests - with World object to share state between steps
+* Cucumber-jvm BDD tests
 * Java8 Lambdas and currying
+
+## This looks familiar!
+
+Well, yes it does!  A quick search for twitter clones on github reveals a number which perhaps just might have been
+used as coding tests for potential job interviews.  If you are looking at this code then you may wish to consider some 
+of the feedback I have received:
+
+* BDD test don't interact with real domain. Class World introduce emulation of interaction and it is not necessary.
+* Repositories contain method "reset" which is used only by tests. Mocks could be used instead. 
+* Insufficient unit test. No unit tests for classes in renderer package. No unit test for class CommandInterpreter.
+* Class CommandInterpreter have two different responsibilities: parsing and executing a command. 
+* Class ResponseRenderer is very complex and doesn't have corresponding test which could explain its behaviours. Method "render" is in package scope from unknown reason. 
+* Functional interfaces in package renderer could be in package scope. They are not used outside the package
+* Behaviour of each command is encapsulated in one class Command. This class doesn't have single responsibility.
+* single characters names of variables and parameters (e.g. in class CommandBuilder, User, ResponseRenderer). It is hard to understand purpose of each parameter or variable.
+* confusing name for message repository 
+
+## Think you can do a better job?
+
+Send me a pull request, i'd be especially interested other options for simplfying the BDD tests
 
 ## Dependencies
 
