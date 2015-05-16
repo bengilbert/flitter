@@ -33,7 +33,7 @@ of the feedback I have received:
 
 ## Think you can do a better job?
 
-Send me a pull request, i'd be especially interested other options for simplfying the BDD tests
+Send me a pull request, i'd be especially interested in other options for simplfying the BDD tests
 
 ## Dependencies
 
